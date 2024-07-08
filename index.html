@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <!-- Bootstrap CSS -->
+  <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="api.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="search-bar">
+      	<i class="fa fa-search search-icon"></i>
+        <input type="text" id="cityInput" placeholder="Enter city name" class="form-control">
+      </div>
+      <h2><i class="fa fa-map-marker"></i> <span id="location">Location</span></h2>
+      <h6 id="weather"></h6>
+      <h4><span id="temp"></span><sup>o</sup>C</h4>
+      <img src="" id="icon" alt="">
+      <button onclick="window.location.reload()" class="refresh"><i class="fa fa-refresh fa-2x"></i></button>
+    </div>
+  </div>
+  <!-- Bootstrap JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    document.getElementById('cityInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        updateWeather();
+      }
+    });
+
+    function updateWeather() {
+      var city = document.getElementById('cityInput').value;
+      var link = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=8eafb031fcfbcbef2f12899bd2e062e3";
+      var request = new XMLHttpRequest();
+      request.open('GET', link, true);
+      request.onload = function() {
+        if (request.status >= 200 && request.status < 400) {
+          var obj = JSON.parse(this.response);
+          document.getElementById('weather').innerHTML = obj.weather[0].description;
+          document.getElementById('location').innerHTML = obj.name;
+          document.getElementById('temp').innerHTML = Math.round(obj.main.temp - 273.15);
+          document.getElementById('icon').src = "https://openweathermap.org/img/w/" + obj.weather[0].icon + ".png";
+        } else {
+          console.log("The city data is not available");
+        }
+      };
+      request.send();
+    }
+
+    // Initial load with a default city
+    updateWeather("Mumbai");
+  </script>
+</body>
+</html>
